@@ -41,10 +41,18 @@ public class Main {
     public void insertString(FilterBypass fb, int offset, String stringToAdd, AttributeSet attr)
         throws BadLocationException
     {
-      if (fb.getDocument() != null) {
-        super.insertString(fb, offset, stringToAdd, attr);
+      int currentLength = fb.getDocument().getLength();
+      int allowed = MAX_LENGTH - currentLength;
+      if (allowed <= 0) {
+        Toolkit.getDefaultToolkit().beep();
+        return;
       }
-      else {
+
+      String toInsert = stringToAdd.length() > allowed ? stringToAdd.substring(0, allowed) : stringToAdd;
+      super.insertString(fb, offset, toInsert, attr);
+
+      // Beep when truncating
+      if (toInsert.length() < stringToAdd.length()) {
         Toolkit.getDefaultToolkit().beep();
       }
     }
@@ -53,11 +61,34 @@ public class Main {
     public void replace(FilterBypass fb, int offset, int lengthToDelete, String stringToAdd, AttributeSet attr)
         throws BadLocationException
     {
-      if (fb.getDocument() != null) {
+      if (fb.getDocument() == null) {
+        Toolkit.getDefaultToolkit().beep();
+        return;
+      }
+
+      int currentLength = fb.getDocument().getLength();
+      int resultingLength = currentLength - lengthToDelete + (stringToAdd == null ? 0 : stringToAdd.length());
+
+      if (resultingLength <= MAX_LENGTH) {
         super.replace(fb, offset, lengthToDelete, stringToAdd, attr);
+        return;
+      }
+
+      //Truncate to fit
+      int allowedToAdd = MAX_LENGTH - (currentLength - lengthToDelete);
+      if (allowedToAdd > 0 && stringToAdd != null && !stringToAdd.isEmpty()) {
+        String truncated = stringToAdd.substring(0, Math.min(allowedToAdd, stringToAdd.length()));
+        super.replace(fb, offset, lengthToDelete, truncated, attr);
+        if (truncated.length() < stringToAdd.length()) {
+          Toolkit.getDefaultToolkit().beep();
+        }
       }
       else {
-        Toolkit.getDefaultToolkit().beep();
+        if (lengthToDelete > 0) {
+          super.replace(fb, offset, lengthToDelete, null, attr);
+        } else {
+          Toolkit.getDefaultToolkit().beep();
+        }
       }
     }
   }

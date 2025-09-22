@@ -61,4 +61,13 @@ Use `./build.sh` to build CiCo and `./run.sh` to run it if using the command lin
 ## Expected results
 * Should display "Developer" for the user name.
 
+# Module 4: Constrain to 8 Digits
+
+## Test Steps
+1. Build and run CiCo.
+2. Enter 99999999999999
+
+## Expected results
+* Should limit input to only 8 characters
+
 

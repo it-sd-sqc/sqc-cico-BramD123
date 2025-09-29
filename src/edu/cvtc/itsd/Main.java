@@ -314,11 +314,20 @@ public class Main {
     labelUser.setForeground(Color.yellow);
     panelStatus.add(labelUser);
 
+
+
+
     labelState = new JLabel("updated", JLabel.LEADING);
     labelState.setFont(fontMain);
     labelState.setAlignmentX(JComponent.CENTER_ALIGNMENT);
     labelState.setForeground(Color.magenta);
     panelStatus.add(labelState);
+
+    buttonAcknowledge = new JButton("Done");
+    buttonAcknowledge.addActionListener(handler);
+    buttonAcknowledge.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+    buttonAcknowledge.setForeground(Color.blue);
+    panelStatus.add(buttonAcknowledge);
 
     panelStatus.add(Box.createVerticalGlue());
 
